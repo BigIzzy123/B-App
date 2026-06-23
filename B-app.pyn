@@ -1,0 +1,89 @@
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMultipart
+import random
+import string
+
+# NOTE: In a real production environment, never hardcode passwords.
+# Use environment variables for sensitive data like email credentials.
+EMAIL_ADDRESS = "your_bank_security_email@example.com"
+EMAIL_PASSWORD = "your_app_password" # Requires an app-specific password for Gmail/Outlook
+RECIPIENT_EMAIL = "israelomatiga123@gmail.com"
+
+class BankAppSecurity:
+    def __init__(self):
+        self.user_database = {} # Simulated secure database
+
+    def generate_secure_password(self, length=12):
+        """Generates a random, secure password."""
+        characters = string.ascii_letters + string.digits + "!@#$%^&*"
+        return ''.join(random.choice(characters) for i in range(length))
+
+    def register_user(self, username):
+        """Simulates user registration and credential creation."""
+        if username in self.user_database:
+            return "User already exists."
+        
+        # Generate secure credentials
+        password = self.generate_secure_password()
+        
+        # Store in "database" (In reality, this would be hashed)
+        self.user_database[username] = {
+            "password": password,
+            "email": RECIPIENT_EMAIL
+        }
+
+        # Send the credentials
+        self.send_login_email(username, password, RECIPIENT_EMAIL)
+        
+        return "User registered successfully. Login details have been sent."
+
+    def send_login_email(self, username, password, to_email):
+        """Simulates sending the login details via email."""
+        print(f"\n--- SIMULATING EMAIL SEND TO {to_email} ---")
+        print(f"Subject: Your Bank App Login Credentials")
+        print(f"Body: \nHello,\n\nYour account for '{username}' has been created.\nUsername: {username}\nPassword: {password}\n\nPlease change your password immediately upon logging in.\n\nSecurity Team.")
+        print("------------------------------------------------\n")
+        
+        # Below is the actual code structure used to send emails via SMTP.
+        # It is commented out to prevent errors since we don't have valid SMTP credentials here.
+        """
+        try:
+            msg = MIMultipart()
+            msg['From'] = EMAIL_ADDRESS
+            msg['To'] = to_email
+            msg['Subject'] = "Your Bank App Login Credentials"
+
+            body = f"""
+            Hello,
+            
+            Your account for '{username}' has been created.
+            Username: {username}
+            Password: {password}
+
+            Please change your password immediately upon logging in.
+            
+            Security Team
+            """
+            msg.attach(MIMEText(body, 'plain'))
+
+            server = smtplib.SMTP('smtp.example.com', 587)
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
+            server.quit()
+            print("Email sent successfully.")
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+        """
+
+# Usage Example
+if __name__ == "__main__":
+    bank_app = BankAppSecurity()
+    
+    # Simulate a user trying to register
+    user_username = "IsraelO_User01"
+    result = bank_app.register_user(user_username)
+    
+    print(result)
+    print("\nNote: In a real application, the email would be delivered to israelomatiga123@gmail.com.")
